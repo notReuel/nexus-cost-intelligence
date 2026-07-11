@@ -1,0 +1,262 @@
+[
+  {
+    "dia": 2,
+    "sched": "Sch 80",
+    "terrain": "Land",
+    "count": 1,
+    "median": 1.71,
+    "min": 1.71,
+    "max": 1.71,
+    "confidence": "LOW"
+  },
+  {
+    "dia": 4,
+    "sched": "Sch 120",
+    "terrain": "Land",
+    "count": 1,
+    "median": 262.847974387033,
+    "min": 262.847974387033,
+    "max": 262.847974387033,
+    "confidence": "LOW"
+  },
+  {
+    "dia": 4,
+    "sched": "Sch 120",
+    "terrain": "Swamp",
+    "count": 1,
+    "median": 108.20593419113,
+    "min": 108.20593419113,
+    "max": 108.20593419113,
+    "confidence": "LOW"
+  },
+  {
+    "dia": 4,
+    "sched": "Sch 160",
+    "terrain": "Land",
+    "count": 1,
+    "median": 151.12678552321,
+    "min": 151.12678552321,
+    "max": 151.12678552321,
+    "confidence": "LOW"
+  },
+  {
+    "dia": 4,
+    "sched": "Sch 160",
+    "terrain": "Swamp",
+    "count": 1,
+    "median": 207.017455305728,
+    "min": 207.017455305728,
+    "max": 207.017455305728,
+    "confidence": "LOW"
+  },
+  {
+    "dia": 4,
+    "sched": "Sch 40",
+    "terrain": "Land",
+    "count": 2,
+    "median": 106.877016972228,
+    "min": 9.31672053231942,
+    "max": 204.437313412137,
+    "confidence": "MED"
+  },
+  {
+    "dia": 4,
+    "sched": "Sch 40",
+    "terrain": "Swamp",
+    "count": 4,
+    "median": 14.5634810157204,
+    "min": 10.5587036199095,
+    "max": 153.694784317495,
+    "confidence": "HIGH"
+  },
+  {
+    "dia": 4,
+    "sched": "Sch 80",
+    "terrain": "Land",
+    "count": 2,
+    "median": 104.140740039402,
+    "min": 3.84416666666667,
+    "max": 204.437313412137,
+    "confidence": "MED"
+  },
+  {
+    "dia": 4,
+    "sched": "Sch 80",
+    "terrain": "Swamp",
+    "count": 2,
+    "median": 91.625103044936,
+    "min": 22.2366314841679,
+    "max": 161.013574605704,
+    "confidence": "MED"
+  },
+  {
+    "dia": 6,
+    "sched": "Sch 120",
+    "terrain": "Land",
+    "count": 1,
+    "median": 48.0468238037812,
+    "min": 48.0468238037812,
+    "max": 48.0468238037812,
+    "confidence": "LOW"
+  },
+  {
+    "dia": 6,
+    "sched": "Sch 120",
+    "terrain": "Swamp",
+    "count": 1,
+    "median": 54.9106557757499,
+    "min": 54.9106557757499,
+    "max": 54.9106557757499,
+    "confidence": "LOW"
+  },
+  {
+    "dia": 6,
+    "sched": "Sch 160",
+    "terrain": "Swamp",
+    "count": 1,
+    "median": 80.7186639903523,
+    "min": 80.7186639903523,
+    "max": 80.7186639903523,
+    "confidence": "LOW"
+  },
+  {
+    "dia": 6,
+    "sched": "Sch 40",
+    "terrain": "Land",
+    "count": 4,
+    "median": 10.3902673453997,
+    "min": 3.99054562032926,
+    "max": 16.9595342205323,
+    "confidence": "HIGH"
+  },
+  {
+    "dia": 6,
+    "sched": "Sch 40",
+    "terrain": "Swamp",
+    "count": 4,
+    "median": 18.6080375681032,
+    "min": 15.6097013574661,
+    "max": 26.6839577810015,
+    "confidence": "HIGH"
+  },
+  {
+    "dia": 6,
+    "sched": "Sch 80",
+    "terrain": "Swamp",
+    "count": 4,
+    "median": 23.5749696852415,
+    "min": 16.6883099547512,
+    "max": 48.0468238037812,
+    "confidence": "HIGH"
+  },
+  {
+    "dia": 8,
+    "sched": "Sch 120",
+    "terrain": "Swamp",
+    "count": 1,
+    "median": 21.1406024736637,
+    "min": 21.1406024736637,
+    "max": 21.1406024736637,
+    "confidence": "LOW"
+  },
+  {
+    "dia": 8,
+    "sched": "Sch 40",
+    "terrain": "Land",
+    "count": 3,
+    "median": 21.5035788973384,
+    "min": 20.7238608597285,
+    "max": 42.9922979396234,
+    "confidence": "HIGH"
+  },
+  {
+    "dia": 8,
+    "sched": "Sch 40",
+    "terrain": "Swamp",
+    "count": 4,
+    "median": 21.1137198785335,
+    "min": 15.6392450703205,
+    "max": 31.131284077835,
+    "confidence": "HIGH"
+  },
+  {
+    "dia": 8,
+    "sched": "Sch 80",
+    "terrain": "Swamp",
+    "count": 4,
+    "median": 21.7374492326618,
+    "min": 15.6392450703205,
+    "max": 33.3549472262518,
+    "confidence": "HIGH"
+  },
+  {
+    "dia": 10,
+    "sched": "Sch 40",
+    "terrain": "Land",
+    "count": 1,
+    "median": 49.0077602798568,
+    "min": 49.0077602798568,
+    "max": 49.0077602798568,
+    "confidence": "LOW"
+  },
+  {
+    "dia": 10,
+    "sched": "Sch 40",
+    "terrain": "Swamp",
+    "count": 3,
+    "median": 26.0590551330798,
+    "min": 10.4261686097999,
+    "max": 27.1556719457013,
+    "confidence": "HIGH"
+  },
+  {
+    "dia": 10,
+    "sched": "Sch 80",
+    "terrain": "Land",
+    "count": 1,
+    "median": 56.7529082770263,
+    "min": 56.7529082770263,
+    "max": 56.7529082770263,
+    "confidence": "LOW"
+  },
+  {
+    "dia": 10,
+    "sched": "Sch 80",
+    "terrain": "Swamp",
+    "count": 1,
+    "median": 12.5113929185046,
+    "min": 12.5113929185046,
+    "max": 12.5113929185046,
+    "confidence": "LOW"
+  },
+  {
+    "dia": 12,
+    "sched": "Sch 40",
+    "terrain": "Land",
+    "count": 1,
+    "median": 5.9625,
+    "min": 5.9625,
+    "max": 5.9625,
+    "confidence": "LOW"
+  },
+  {
+    "dia": 12,
+    "sched": "Sch 40",
+    "terrain": "Swamp",
+    "count": 2,
+    "median": 26.0299478863789,
+    "min": 24.660322243346,
+    "max": 27.3995735294118,
+    "confidence": "MED"
+  },
+  {
+    "dia": 16,
+    "sched": "Sch 40",
+    "terrain": "Swamp",
+    "count": 2,
+    "median": 39.4961913012061,
+    "min": 36.294693438914,
+    "max": 42.6976891634981,
+    "confidence": "MED"
+  }
+]
