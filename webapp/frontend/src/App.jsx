@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import {
   Home as HomeIcon, SlidersHorizontal, Table2, BarChart3, Database,
   LineChart, FileDown, Lock, Wrench, ShieldCheck, Menu, X,
-  PanelLeftClose, PanelLeftOpen,
+  PanelLeftClose, PanelLeftOpen, LogOut,
 } from 'lucide-react';
 
 import Home from './pages/Home.jsx';
@@ -137,9 +137,12 @@ function AccountChip() {
     );
   }
   return (
-    <button onClick={logout} title="Sign out" className="px-2 py-0.5 rounded-sm bg-accent-light text-accent-dim font-semibold">
-      {auth.name} · {auth.role}
-    </button>
+    <div className="flex items-center gap-2">
+      <span className="px-2 py-0.5 rounded-sm bg-accent-light text-accent-dim font-semibold">{auth.name} · {auth.role}</span>
+      <button onClick={logout} className="inline-flex items-center gap-1 px-2 py-0.5 rounded-sm border border-slate-300 text-slate-600 hover:border-red-400 hover:text-red-600 font-semibold">
+        <LogOut className="w-3.5 h-3.5" />Sign out
+      </button>
+    </div>
   );
 }
 
