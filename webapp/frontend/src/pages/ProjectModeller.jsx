@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Save, FolderOpen, ArrowRight, Loader2, AlertTriangle } from 'lucide-react';
 import { api } from '../lib/api.js';
+import { useAuth } from '../lib/auth.jsx';
 import { Panel, Segmented, Field, TextIn, ConfidencePill, CoverageBar, money, moneyK } from '../components/Enterprise.jsx';
 
 const DEFAULT = {
@@ -20,6 +21,7 @@ const SECTION_LABELS = {
 
 export default function ProjectModeller() {
   const nav = useNavigate();
+  const { auth } = useAuth();
   const [scope, setScope] = useState(() => {
     try { const s = localStorage.getItem('ncmp:modeller_input'); if (s) return { ...DEFAULT, ...JSON.parse(s) }; } catch {}
     return DEFAULT;
@@ -34,10 +36,10 @@ export default function ProjectModeller() {
 
   const run = useCallback(async (sc) => {
     setLoading(true); setErr(null);
-    try { setResult(await api.modelProject(sc)); }
+    try { setResult(await api.modelProject(sc, auth?.token)); }
     catch (e) { setErr(String(e.message || e)); }
     finally { setLoading(false); }
-  }, []);
+  }, [auth?.token]);
 
   useEffect(() => {
     if (timer.current) clearTimeout(timer.current);

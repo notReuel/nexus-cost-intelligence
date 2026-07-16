@@ -42,6 +42,8 @@ def app_client():
 
     app = FastAPI()
     register_v2(app)
+    from app.model_routes import register_model_routes
+    register_model_routes(app)
 
     from fastapi.testclient import TestClient
     with TestClient(app) as client:

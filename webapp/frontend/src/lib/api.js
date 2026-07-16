@@ -109,9 +109,11 @@ export const api = {
     return await res.json();
   },
 
-  // v5: Project Modeller / Budget (compute-only, no persistence — not a write path)
-  modelProject:   (scope) => post('/model/project', scope),
-  generateBudget: (scope) => post('/model/generate-budget', scope),
+  // v5: Project Modeller / Budget (compute-only, no persistence — not a write path).
+  // Public by design — but if a token is supplied, the backend blends in
+  // the caller's own tenant data alongside the shared reference library.
+  modelProject:   (scope, token) => postAuthed('/model/project', scope, token),
+  generateBudget: (scope, token) => postAuthed('/model/generate-budget', scope, token),
 
   // Bid comparison (multi-vendor)
   bidComparison: async (files, projectName) => {

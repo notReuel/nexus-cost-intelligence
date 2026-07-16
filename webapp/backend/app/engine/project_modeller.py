@@ -61,7 +61,7 @@ def _confidence(n: int) -> str:
     return 'NONE'
 
 
-def observation_stats(sub_category, dia=None, terrain=None, operator_filter=None,
+def _json_observation_stats(sub_category, dia=None, terrain=None, operator_filter=None,
                       dia_tolerance=2):
     """Return real source stats for a BOQ line from raw_observations.
 
@@ -109,7 +109,7 @@ def observation_stats(sub_category, dia=None, terrain=None, operator_filter=None
     return stat
 
 
-def _operator_lay_weld_rate(operator_filter, dia, sched, terrain):
+def _json_operator_lay_weld_rate(operator_filter, dia, sched, terrain):
     """Operator-specific lay&weld $/m from observations, with blended fallback.
 
     Returns (low, mid, high, source_stat, used_operator_specific: bool).
@@ -220,10 +220,48 @@ class ProjectResult(BaseModel):
 # The modeller
 # ════════════════════════════════════════════════════════════════════════
 
-def model_project(scope: ProjectScope) -> ProjectResult:
+def model_project(scope: ProjectScope, session=None, caller_tenant_id: int = None) -> ProjectResult:
+    """
+    `session` and `caller_tenant_id` connect this estimate to real, governed
+    data (Phase 1/2 of retiring the JSON snapshot):
+      - No session provided -> falls back to the legacy JSON-backed lookups
+        (kept only so any not-yet-updated caller doesn't hard-break; new
+        code should always pass a session).
+      - Session provided, caller_tenant_id=None -> reference-library-only
+        data (the public, logged-out view).
+      - Session provided, caller_tenant_id=<id> -> the caller's own tenant's
+        approved data blended with the reference library — the same
+        blending rule GET /api/v2/benchmarks already uses.
+    """
     L = scope.length_m
     diag: List[str] = []
     op_filter = OPERATOR_ALIASES.get(scope.operator)  # None if Blended
+
+    if session is not None:
+        from .db_bridge import (
+            resolve_tenant_scope, db_observation_stats, db_operator_lay_weld_rate,
+        )
+        _tenant_ids = resolve_tenant_scope(session, caller_tenant_id)
+    else:
+        _tenant_ids = None
+
+    def observation_stats(sub_category, dia=None, terrain=None, operator_filter=None, dia_tolerance=2):
+        if session is not None:
+            return db_observation_stats(session, _tenant_ids, sub_category, dia=dia, terrain=terrain,
+                                        operator_filter=operator_filter, dia_tolerance=dia_tolerance)
+        return _json_observation_stats(sub_category, dia=dia, terrain=terrain,
+                                       operator_filter=operator_filter, dia_tolerance=dia_tolerance)
+
+    def _operator_lay_weld_rate(operator_filter, dia, sched, terrain):
+        if session is not None:
+            return db_operator_lay_weld_rate(session, _tenant_ids, operator_filter, dia, terrain)
+        return _json_operator_lay_weld_rate(operator_filter, dia, sched, terrain)
+    # Both closures are defined unconditionally (not inside the `if` above) —
+    # Python treats a name assigned ANYWHERE in a function as local to the
+    # whole function body, so defining them only inside the `if` branch left
+    # them unbound whenever session was None, breaking the legacy fallback
+    # with an UnboundLocalError. Defining them here, always, with the
+    # dispatch logic INSIDE each closure, avoids that trap.
 
     # ── Calibrated spine (untouched engine) — for consistent component economics
     spine = estimate_pipeline(PipelineInput(

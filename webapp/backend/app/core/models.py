@@ -145,11 +145,15 @@ class Observation(SQLModel, table=True):
     __tablename__ = "observation"
     __table_args__ = (
         Index("ix_obs_item_status", "item_id", "status"),
-        Index("ix_obs_tenant", "tenant_id"),
+        Index("ix_obs_tenant_status", "tenant_id", "status"),
+        # No standalone tenant_id/item_id/status indexes — both compound
+        # indexes above already serve single-column lookups on their
+        # leftmost column, so a separate single-column index would be pure
+        # duplication (extra disk, slower writes, zero read benefit).
     )
     id: Optional[int] = Field(default=None, primary_key=True)
-    tenant_id: int = Field(foreign_key="tenant.id", index=True)
-    item_id: int = Field(foreign_key="item.id", index=True)
+    tenant_id: int = Field(foreign_key="tenant.id")
+    item_id: int = Field(foreign_key="item.id")
     source_type: SourceType = Field(default=SourceType.MANUAL)
     source_ref: str = ""                        # doc name / PO number
     vendor: Optional[str] = None
@@ -165,7 +169,7 @@ class Observation(SQLModel, table=True):
     norm_method: str = ""
     confidence_flag: str = "OK"
     # Review queue — the C-1 fix: PENDING until an approver promotes it.
-    status: ObsStatus = Field(default=ObsStatus.PENDING, index=True)
+    status: ObsStatus = Field(default=ObsStatus.PENDING)
     submitted_by: Optional[int] = Field(default=None, foreign_key="user.id")
     approved_by: Optional[int] = Field(default=None, foreign_key="user.id")
     notes: Optional[str] = None

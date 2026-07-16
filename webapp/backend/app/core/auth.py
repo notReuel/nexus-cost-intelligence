@@ -112,3 +112,20 @@ def tenant_scope(user: User = Depends(current_user)) -> int:
     impossible because every query filters on this — the IDOR / cross-tenant
     fix from the audit."""
     return user.tenant_id
+
+
+def optional_current_user(token: Optional[str] = Depends(oauth2),
+                          session: Session = Depends(get_session)) -> Optional[User]:
+    """For the estimating endpoints (Project Model, Budget, Ranking), which
+    are public by design but must show a richer, tenant-blended view to a
+    logged-in user. Unlike current_user, a missing or invalid token is NOT
+    an error here — it just means 'anonymous, reference-library-only'. A
+    present-but-invalid token IS still rejected, so a stale/tampered token
+    can't silently degrade to a different tenant's view."""
+    if not token:
+        return None
+    data = _decode(token)  # raises 401 if the token is malformed/expired
+    user = session.get(User, int(data["sub"]))
+    if not user or not user.is_active:
+        raise HTTPException(status.HTTP_401_UNAUTHORIZED, "User not found or inactive")
+    return user
