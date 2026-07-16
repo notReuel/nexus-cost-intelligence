@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Fragment } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ChevronDown, ChevronRight, Download, ArrowRight, Inbox } from 'lucide-react';
 import { Panel, ConfidencePill, SourcePopover, CoverageBar, money } from '../components/Enterprise.jsx';
@@ -63,19 +63,19 @@ export default function Budget() {
       {/* BOQ table */}
       <Panel title="Bill of quantities" subtitle="Per-line source transparency — click the database icon on any row">
         <div className="overflow-x-auto -mx-4">
-          <table className="w-full text-[12px] min-w-[860px]">
+          <table className="text-[12px] min-w-[900px] border-collapse">
             <thead>
               <tr className="text-left text-slate-500 border-b border-slate-200 text-[10px] uppercase tracking-wider">
-                <th className="py-2 px-2 font-semibold">#</th>
-                <th className="py-2 px-2 font-semibold">Description</th>
-                <th className="py-2 px-2 font-semibold text-right">Qty</th>
-                <th className="py-2 px-2 font-semibold">Unit</th>
-                <th className="py-2 px-2 font-semibold text-right">Low</th>
-                <th className="py-2 px-2 font-semibold text-right">Mid</th>
-                <th className="py-2 px-2 font-semibold text-right">High</th>
-                <th className="py-2 px-2 font-semibold text-right">Line total</th>
-                <th className="py-2 px-2 font-semibold">Confidence</th>
-                <th className="py-2 px-2 font-semibold text-right">Src</th>
+                <th className="sticky left-0 z-10 bg-[#FFFFFF] py-2 px-2 font-semibold w-10">#</th>
+                <th className="sticky left-10 z-10 bg-[#FFFFFF] py-2 px-2 font-semibold min-w-[240px]">Description</th>
+                <th className="py-2 px-2 font-semibold text-right w-20">Qty</th>
+                <th className="py-2 px-2 font-semibold w-16">Unit</th>
+                <th className="py-2 px-2 font-semibold text-right w-20">Low</th>
+                <th className="py-2 px-2 font-semibold text-right w-20">Mid</th>
+                <th className="py-2 px-2 font-semibold text-right w-20">High</th>
+                <th className="py-2 px-2 font-semibold text-right w-24">Line total</th>
+                <th className="py-2 px-2 font-semibold w-28">Confidence</th>
+                <th className="py-2 px-2 font-semibold text-right w-12">Src</th>
               </tr>
             </thead>
             <tbody>
@@ -83,9 +83,9 @@ export default function Budget() {
                 const secTotal = lines.reduce((a, l) => a + l.line_mid, 0);
                 const isC = collapsed[sec];
                 return (
-                  <tbody key={sec}>
-                    <tr className="bg-slate-100 border-b border-slate-200 cursor-pointer hover:bg-slate-100" onClick={() => toggle(sec)}>
-                      <td className="py-1.5 px-2" colSpan={2}>
+                  <Fragment key={sec}>
+                    <tr className="bg-slate-100 border-b border-slate-200 cursor-pointer hover:bg-slate-200" onClick={() => toggle(sec)}>
+                      <td className="sticky left-0 z-10 bg-slate-100 py-1.5 px-2" colSpan={2}>
                         <span className="inline-flex items-center gap-1.5 font-semibold text-slate-800 text-[12px]">
                           {isC ? <ChevronRight className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}{sec}
                           <span className="text-slate-500 font-normal">({lines.length})</span>
@@ -97,8 +97,8 @@ export default function Budget() {
                     </tr>
                     {!isC && lines.map(l => (
                       <tr key={l.item_no} className="border-b border-slate-200 hover:bg-slate-100">
-                        <td className="py-1.5 px-2 num-tabular text-slate-500">{l.item_no}</td>
-                        <td className="py-1.5 px-2">
+                        <td className="sticky left-0 z-10 bg-[#FFFFFF] py-1.5 px-2 num-tabular text-slate-500 w-10">{l.item_no}</td>
+                        <td className="sticky left-10 z-10 bg-[#FFFFFF] py-1.5 px-2 min-w-[240px]">
                           <div className="text-slate-800">{l.description}</div>
                           <div className="text-[10px] text-slate-500">{l.spec}{l.source.operator_used?.length ? ` · ${l.source.operator_used.join(', ')}` : ''}</div>
                         </td>
@@ -112,11 +112,12 @@ export default function Budget() {
                         <td className="py-1.5 px-2 text-right"><SourcePopover source={l.source} /></td>
                       </tr>
                     ))}
-                  </tbody>
+                  </Fragment>
                 );
               })}
               <tr className="border-t-2 border-accent/40 bg-accent/5">
-                <td colSpan={7} className="py-2 px-2 text-right font-bold text-slate-900 text-[13px]">Direct cost subtotal</td>
+                <td className="sticky left-0 z-10 bg-accent/5" colSpan={2}></td>
+                <td colSpan={5} className="py-2 px-2 text-right font-bold text-slate-900 text-[13px]">Direct cost subtotal</td>
                 <td className="py-2 px-2 text-right font-bold num-tabular text-accent text-[13px]">{money(result.direct.mid)}</td>
                 <td colSpan={2}></td>
               </tr>

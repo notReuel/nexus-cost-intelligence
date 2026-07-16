@@ -370,18 +370,48 @@ def model_project(scope: ProjectScope, session=None, caller_tenant_id: int = Non
                         f"{stat['n_obs']} observation(s) — no coating-type differentiation available.")
 
     # ── HYDROTEST ────────────────────────────────────────────────────────
+    # Seplat's Schedule of Rates bills "flush, pig ball & pressure test" as
+    # its own line distinct from a straight flush/pressure test, and shows
+    # the flush step itself carrying a materially different rate. Split the
+    # single observed rate into its two constituent operations (60% flush &
+    # pig ball / 40% pressure test) rather than one opaque "hydrotest" line —
+    # same weighting caveat as the mob/CASHES split above: an allocation of
+    # one observed total, not two independently observed rates.
     if S.hydrotest:
         stat = observation_stats('Hydrotesting', dia=scope.dia, terrain=scope.terrain)
         if stat['n_obs'] > 0 and stat['median']:
-            add('Hydrotest', 'Hydrostatic pressure test', 'Hydrotest per m', L, 'm',
-                stat['low'], stat['median'], stat['high'], stat)
+            HYDRO_SPLIT = [
+                ('Flush, pig ball and pressure test — pigging & flush', 0.60),
+                ('Flush, pig ball and pressure test — pressure test', 0.40),
+            ]
+            for desc, w in HYDRO_SPLIT:
+                note = (stat.get('note') or '') + ' — allocated share of observed hydrotest rate, not independently observed'
+                add('Hydrotest', desc, 'Hydrotest per m', L, 'm',
+                    stat['low'] * w, stat['median'] * w, stat['high'] * w,
+                    {**stat, 'note': note.strip(' —')})
 
     # ── MOB / CASHES / SECURITY ──────────────────────────────────────────
+    # Split into the three named provisional sums operators actually issue
+    # separately (see e.g. BEME Bill No.1: item 1 "mobilization of equipment
+    # and materials", item 1.01 "CASHES compliance", plus demob at close-out).
+    # Weights are a documented allocation of the bundle total, not a new
+    # number — 45/25/30 mob/CASHES/demob is the observed split across the
+    # BEME preliminaries bills currently in the data register. The three
+    # lines re-sum to the same bundle total, so the calibration invariant
+    # is unaffected.
     if S.mob_cashes_security:
         r = spine_rows['Mob + CASHES + Demob']
         mstat = observation_stats('Mob / demob', terrain=scope.terrain)
-        add('Mob/CASHES/Security', 'Mobilisation + CASHES + demobilisation',
-            'Bundle (mob/CASHES/demob)', 1, 'lump sum', r.low, r.mid, r.high, mstat)
+        MOB_SPLIT = [
+            ('Mobilisation of equipment and materials to site', 0.45),
+            ('CASHES compliance (Community Affairs, Safety, Health, Environment & Security)', 0.25),
+            ('Demobilisation of equipment and personnel', 0.30),
+        ]
+        for desc, w in MOB_SPLIT:
+            note = (mstat.get('note') or '') + ' — allocated share of the mob/CASHES/demob bundle, not independently observed'
+            add('Mob/CASHES/Security', desc, 'Provisional sum, allocated share of bundle',
+                1, 'sum', r.low * w, r.mid * w, r.high * w,
+                {**mstat, 'note': note.strip(' —')})
         sr = spine_rows['Security']
         sstat = observation_stats('Security / CASHES', terrain=scope.terrain)
         add('Mob/CASHES/Security', f'Security spread ({scope.duration_days} days)',
