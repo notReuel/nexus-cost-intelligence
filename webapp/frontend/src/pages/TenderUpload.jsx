@@ -130,7 +130,7 @@ export default function TenderUpload() {
               <li><span className="text-amber font-bold">1.</span> Your BOQ is parsed (header row auto-detected, columns auto-mapped).</li>
               <li><span className="text-amber font-bold">2.</span> Each line description is normalized — diameter, schedule, material grade, unit extracted.</li>
               <li><span className="text-amber font-bold">3.</span> Each normalized line is matched to the closest catalogue benchmark (369 items, USD 2024 normalised).</li>
-              <li><span className="text-amber font-bold">4.</span> Vendor rates are compared to the catalogue Mid → GREEN (±15%), AMBER (±15–30%), RED (>±30%), or UNMATCHED.</li>
+              <li><span className="text-amber font-bold">4.</span> Vendor rates are compared to the catalogue Mid → GREEN (±15%), AMBER (±15–30%), RED (&gt;±30%), or UNMATCHED.</li>
               <li><span className="text-amber font-bold">5.</span> Executive summary, procurement summary, and a line-by-line variance table are returned.</li>
             </ol>
           </Card>

@@ -68,30 +68,76 @@ def build_bid_comparison(vendor_reports):
     recommended = candidates[0] if candidates else None
     lowest = min(vendor_summary, key=lambda x: x['total_vendor_value'])
 
-    # 3. Side-by-side line item matrix
-    line_matrix = []
-    n_lines = max(len(v['report']['line_items']) for v in vendor_reports)
-    for idx in range(n_lines):
-        row = {'line_index': idx + 1, 'description': '', 'unit': '', 'vendors': {}}
-        for v in vendor_reports:
-            items = v['report']['line_items']
-            if idx < len(items):
-                line = items[idx]
-                if not row['description']:
-                    row['description'] = line.get('description', '')
-                    row['unit'] = line.get('unit', '')
-                row['vendors'][v['vendor_label']] = {
-                    'rate':       line.get('vendor_rate'),
-                    'amount':     line.get('vendor_amount'),
-                    'verdict':    line.get('verdict'),
-                    'delta_pct':  line.get('variance', {}).get('delta_pct') if line.get('variance') else None,
-                    'bench_mid':  line.get('variance', {}).get('benchmark_mid') if line.get('variance') else None,
+    # 3. Side-by-side line item matrix — grouped by the CANONICAL benchmark
+    #    catalogue item each vendor line actually matched to, never by raw
+    #    row position.
+    #
+    #    History: the original implementation zipped vendors' line_items
+    #    lists together by index (row N = vendor['line_items'][N] for every
+    #    vendor), on the unstated assumption that every vendor itemizes
+    #    their BOQ in the same order. Two vendors bidding the identical
+    #    scope but listing "pipe transport" before "line pipe" (a completely
+    #    ordinary difference in how contractors format a BOQ) produced a row
+    #    labelled "Line pipe" that silently compared one vendor's pipe rate
+    #    against the other vendor's transport rate — same row, different
+    #    physical items, no error, no warning. Confirmed live: two vendors
+    #    bidding the same 3-item scope in different order returned exactly
+    #    that mismatch (see tests/test_bid_comparator.py).
+    #
+    #    It also explains why "Bench Mid" rendered blank in the UI: the row
+    #    dict never set a top-level bench_mid at all — only a per-vendor
+    #    copy nested under row['vendors'][label]['bench_mid'], which the
+    #    frontend's single Bench Mid column never reads.
+    #
+    #    Fix: key rows by catalogue_id (the actual matched benchmark item,
+    #    identical for every vendor regardless of their own row order/count),
+    #    with one authoritative bench_mid per row. Vendor lines that matched
+    #    nothing are kept — never silently dropped or force-fit into an
+    #    unrelated row — as unmatched_lines, per vendor, for the reviewer to
+    #    see explicitly.
+    rows_by_cat = {}
+    row_order = []
+    unmatched_lines = []
+
+    for v in vendor_reports:
+        for line in v['report']['line_items']:
+            variance = line.get('variance')
+            cat_id = variance.get('catalogue_id') if variance else None
+            if not cat_id:
+                unmatched_lines.append({
+                    'vendor_label': v['vendor_label'],
+                    'description': line.get('description', ''),
+                    'unit': line.get('unit', ''),
+                    'rate': line.get('vendor_rate'),
+                    'amount': line.get('vendor_amount'),
+                })
+                continue
+            if cat_id not in rows_by_cat:
+                row_order.append(cat_id)
+                rows_by_cat[cat_id] = {
+                    'catalogue_id': cat_id,
+                    'description': variance.get('catalogue_item') or line.get('description', ''),
+                    'unit': line.get('unit', ''),
+                    'bench_mid': variance.get('benchmark_mid'),
+                    'vendors': {},
                 }
-            else:
-                row['vendors'][v['vendor_label']] = None
+            rows_by_cat[cat_id]['vendors'][v['vendor_label']] = {
+                'rate':      line.get('vendor_rate'),
+                'amount':    line.get('vendor_amount'),
+                'verdict':   line.get('verdict'),
+                'delta_pct': variance.get('delta_pct'),
+                'bench_mid': variance.get('benchmark_mid'),
+            }
+
+    line_matrix = []
+    for i, cat_id in enumerate(row_order):
+        row = rows_by_cat[cat_id]
+        for v in vendor_reports:
+            row['vendors'].setdefault(v['vendor_label'], None)
         rates = [(label, vd['rate']) for label, vd in row['vendors'].items() if vd and vd.get('rate')]
         if rates:
             row['lowest_vendor'] = min(rates, key=lambda x: x[1])[0]
+        row['line_index'] = i + 1
         line_matrix.append(row)
 
     return {
@@ -105,6 +151,7 @@ def build_bid_comparison(vendor_reports):
             'rationale':          _build_recommendation_rationale(recommended, lowest),
         },
         'line_matrix': line_matrix,
+        'unmatched_lines': unmatched_lines,
     }
 
 

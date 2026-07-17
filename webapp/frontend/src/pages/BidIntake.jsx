@@ -179,6 +179,35 @@ export default function BidIntake() {
               </div>
             </Panel>
           )}
+
+          {result.unmatched_lines?.length > 0 && (
+            <Panel title="Unmatched vendor lines" subtitle="Priced by a vendor but no benchmark catalogue match — shown so they're never silently dropped">
+              <div className="overflow-x-auto -mx-4">
+                <table className="text-[11px] min-w-full">
+                  <thead>
+                    <tr className="text-slate-500 text-[10px] uppercase tracking-wider border-b border-slate-200">
+                      <th className="py-2 px-3 text-left font-semibold">Vendor</th>
+                      <th className="py-2 px-3 text-left font-semibold">Description</th>
+                      <th className="py-2 px-3 text-left font-semibold">Unit</th>
+                      <th className="py-2 px-3 text-right font-semibold">Rate</th>
+                      <th className="py-2 px-3 text-right font-semibold">Amount</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {result.unmatched_lines.map((u, i) => (
+                      <tr key={i} className="border-b border-slate-200 hover:bg-slate-100">
+                        <td className="py-1.5 px-3 text-slate-700 font-semibold whitespace-nowrap">{u.vendor_label}</td>
+                        <td className="py-1.5 px-3 text-slate-800">{u.description}</td>
+                        <td className="py-1.5 px-3 text-slate-600">{u.unit}</td>
+                        <td className="py-1.5 px-3 text-right num-tabular text-slate-600">{u.rate != null ? money(u.rate) : '—'}</td>
+                        <td className="py-1.5 px-3 text-right num-tabular text-slate-800">{u.amount != null ? money(u.amount) : '—'}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </Panel>
+          )}
         </>
       )}
     </div>

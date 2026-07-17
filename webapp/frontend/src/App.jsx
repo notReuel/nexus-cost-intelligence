@@ -3,13 +3,14 @@ import { useState, useEffect } from 'react';
 import {
   Home as HomeIcon, SlidersHorizontal, Table2, BarChart3, Database,
   LineChart, FileDown, Lock, Wrench, ShieldCheck, Menu, X,
-  PanelLeftClose, PanelLeftOpen, LogOut,
+  PanelLeftClose, PanelLeftOpen, LogOut, UploadCloud,
 } from 'lucide-react';
 
 import Home from './pages/Home.jsx';
 import ProjectModeller from './pages/ProjectModeller.jsx';
 import Budget from './pages/Budget.jsx';
 import BidIntake from './pages/BidIntake.jsx';
+import TenderUpload from './pages/TenderUpload.jsx';
 import DataEntry from './pages/DataEntry.jsx';
 import Login from './pages/Login.jsx';
 import Catalogue from './pages/Catalogue.jsx';
@@ -23,6 +24,7 @@ const NAV = [
   { to: '/model', label: 'Project Model', Icon: SlidersHorizontal },
   { to: '/budget', label: 'Line-item Budget', Icon: Table2 },
   { section: 'Procurement' },
+  { to: '/tender', label: 'Vendor Bid Check', Icon: UploadCloud },
   { to: '/bids', label: 'Cost Benchmarking & Ranking', Icon: BarChart3 },
   { section: 'Data' },
   { to: '/catalogue', label: 'Catalogue', Icon: Database },
@@ -112,6 +114,7 @@ function AppShell() {
             <Route path="/" element={<Home />} />
             <Route path="/model" element={<ProjectModeller />} />
             <Route path="/budget" element={<Budget />} />
+            <Route path="/tender" element={<TenderUpload />} />
             <Route path="/bids" element={<BidIntake />} />
             <Route path="/catalogue" element={<Catalogue />} />
             <Route path="/data" element={<DataEntry />} />
