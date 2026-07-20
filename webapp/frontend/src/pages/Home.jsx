@@ -1,9 +1,11 @@
 import { Link } from 'react-router-dom';
-import { SlidersHorizontal, BarChart3, LineChart, ArrowRight, Lock } from 'lucide-react';
+import { SlidersHorizontal, BarChart3, LineChart, ArrowRight, Lock, UploadCloud } from 'lucide-react';
 
 const CARDS = [
   { to: '/model', Icon: SlidersHorizontal, title: 'Project Model',
     body: 'Model a pipeline cost from real data.' },
+  { to: '/tender', Icon: UploadCloud, title: 'Vendor Bid Check',
+    body: 'Upload one vendor BOQ and benchmark it directly — no project model needed.' },
   { to: '/bids', Icon: BarChart3, title: 'Cost Benchmarking & Ranking',
     body: 'Check and rank vendor bids.' },
   { to: null, Icon: LineChart, title: 'Cost Intelligence', locked: true,
